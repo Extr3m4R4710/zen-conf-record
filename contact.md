@@ -4,5 +4,5 @@ title: Contact
 ---
 
 Matrix: @higashiya:matrix[.]org <br>
-session: 0500cb5ab0bd6c0e746176a06c697919c6d4676a05490e2cf1f230baa8fcee6476 <br>
+Simplex: https://tinyurl.com/drkreuzhq-simplex (電話番号、メールアドレス不要でやり取りできます)<br>
 Email: Alanibr2049[@]protonmail[.]com <br>
