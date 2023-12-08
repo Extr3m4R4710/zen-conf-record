@@ -2,6 +2,7 @@
 layout: post
 title: AndroidスマートフォンにBlackArchを構築する。root化不要
 data: 2023-11-19 5:31 +0900
+tag: [linux, chroot, モバイル, hack]
 ---
 ![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-11-19/blackarch-rootless-on-android/blackarch-on-my-phone-with-keybord.jpg)
 
