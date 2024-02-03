@@ -33,7 +33,7 @@ layout: default
         <h2 class="archive__subtitle">{{ tag[0] }}</h2>
         <div class="entries-{{ entries_layout }}">
           {% for post in tag.last %}
-            {{ post.title }} <!-- 暫定変更 -->
+            <li><a href="{{ post.url }}">{{ post.title }}</a></li>
           {% endfor %}
         </div>
         <a href="#page-title" class="back-to-top">{{ site.data.ui-text[site.locale].back_to_top | default: 'Back to Top' }} &uarr;</a>
