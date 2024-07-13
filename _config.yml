@@ -1,6 +1,6 @@
 future: true
 timezone: Asia/Tokyo
-
+baseurl: "/zen-conf-record"
 ### your site title here
 
 title: Zen.conf's Record
