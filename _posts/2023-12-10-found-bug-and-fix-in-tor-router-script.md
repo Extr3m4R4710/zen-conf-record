@@ -1,6 +1,6 @@
 ---
 layout: post
-title: [書きかけ] 匿名通信用ラッパーtor-routerのフォークを書いた話
+title: "[書きかけ] 匿名通信用ラッパーtor-routerのフォークを書いた話"
 data:  2024-01-04 +0900
 tag: [linux, tor, 匿名通信, hack, 開発]
 ---
