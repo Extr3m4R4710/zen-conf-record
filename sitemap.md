@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title: SiteMap
 ---
 # 姉妹ブログ
