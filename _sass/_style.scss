@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
     text-rendering: geometricPrecision;
-   
+
 }
 ::-webkit-scrollbar {
     -webkit-appearance: none;
@@ -37,9 +37,9 @@ body {
             padding: 10px;
     }
 }
-    
+
 h1,h2,h3,h4,h5,h6 {
-    
+
     color: $h-color;
     font-size: 20px;
 
@@ -63,9 +63,9 @@ a {
     text-decoration: none;
     border-bottom: 1px solid;
     &:hover {
-        background-color: $h-color;    
+        background-color: $h-color;
         color: #444;
-        
+
     }
 }
 
@@ -100,8 +100,11 @@ nav {
  img {
     max-width: 100%;
 }
- 
+
 code, pre {
+    font-family: $base-cf;
+    font-size: $base-fs;
+    font-weight: 300;
     overflow: auto;
     font-size: 16px;
     //padding: 4px 10px;
@@ -122,7 +125,7 @@ blockquote {
     h1:before{
         content: "";
     }
-    
+
     &:hover > .title {
         color: #143034;
     }
