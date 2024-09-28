@@ -1,0 +1,39 @@
+future: true
+timezone: Asia/Tokyo
+baseurl: "/zen-conf-record"
+### your site title here
+
+title: Zen.conf's Record
+
+permalink: /:title
+
+#baseurl: /dark-side
+
+sass:
+  style: compressed
+
+### exclude the instructions / write-up in the README.md
+exclude:
+- README.md
+
+highlighter: rouge
+#markdown: kramdown
+### exclude the instructions / write-up in the README.md
+
+# Comments
+#disqus-shortname: webjeda-demo
+
+#optimization
+#compress.html
+compress_html:
+  clippings: [html,div, p, ul, td, h1, h2, h3, h4,link, meta, footer, nav, img, header, hr, br, head, style, li, ul, ol, time, main, script, title]
+  endings: [all]
+  ignore:
+    envs: [local]
+  blanklines: false
+  profile: false
+  startings: []
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
