@@ -192,4 +192,4 @@ BlakArchの提供するツールはグールプ化されている。例えば`pa
 ![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-11-19/blackarch-rootless-on-android/blackarch-guide-group2.png)
 ![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-11-19/blackarch-rootless-on-android/blackarch-guide-group.png)
 
-しかし、基本的にAndroidはAarch64ファミリーのCPUで動くためx86系ではない。もし仮にグルーピングされたパッケージにx86_64用依存関係が含まれていた場合、正常なインストールができないので(依存関係を調べ上げ、かつAURかgitから落としてパスを通せば別)欲しいパッケージが手に入らなかったりする。例えばMetasploitはx86_64パッケージとして用意されてるし、BlackArch環境を作るぐらいなら、nhを使った方が間違いなく早く手堅いと思う。だがnhは数年に1回の頻度でセットアップで難が出るので、fake root環境の再構築泣きを見るので、臨時でなら使えるかもしれない。PKGBUILDのアーキテクチャ指定をどうするのかが悩みの種となるだろうが...<br>
+しかし、基本的にAndroidはAarch64ファミリーのCPUで動くためx86系ではない。もし仮にグルーピングされたパッケージにx86_64用依存関係が含まれていた場合、正常なインストールができないので(依存関係を調べ上げ、かつAURかgitから落としてパスを通せば別)欲しいパッケージが手に入らなかったりする。例えばMetasploitはx86_64パッケージとして用意されてるし、BlackArch環境を作るぐらいなら、nhを使った方が間違いなく早く手堅いと思う。だがnhは数年に1回の頻度でセットアップで難が出るので、fake root環境の再構築の度泣きを見るので、臨時でなら使えるかもしれない。PKGBUILDのアーキテクチャ指定を都度差し替えるのは中々骨が折れると思うが...<br>
