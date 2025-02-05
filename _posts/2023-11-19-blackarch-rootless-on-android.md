@@ -6,7 +6,7 @@ tag: [linux, chroot, モバイル, hack]
 ---
 ![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-11-19/blackarch-rootless-on-android/blackarch-on-my-phone-with-keybord.jpg)
 
-Androidスマートフォンをペンテスト仕様にカスタムする方法としてNethunterをROM焼きするか、TermuxにNethunter Rootless(nh)を導入する方法が一般的だが、Kali(特にnh rootless)はBlackArchと比較してツール数が少なかったり幅広い開発・侵入用支援モジュールが不足している側面も見受けられる。ユニバーサルなDebianとハッカーフレンドリーなArchLinuxの違い。ほんの出来心でBlackArch環境にトライしてみる。<br>
+Androidスマートフォンをペンテスト仕様にカスタムする方法としてNethunterをROM焼きするか、TermuxにNethunter Rootless(nh)を導入する方法が一般的だが、Kali(特にnh rootless)はBlackArchと比較してツール数が少なかったり幅広い開発・侵入用支援モジュールが不足している側面も見受けられる。ユニバーサルなDebianとハッカーフレンドリーなArchLinuxの違いだと考えている。ほんの出来心でBlackArch環境をTermux上に構築してみる。<br>
 
 本稿ではNetHunter Rootlessの代替として機能するBlackArch環境構築の手引きとnh以外の選択肢を示すことにする。<br>
 
@@ -17,7 +17,6 @@ Androidスマートフォンをペンテスト仕様にカスタムする方法�
 # setup-blackarch.sh
 #
 #
-
 
 # 中立かつ安定したDNSに変更
 echo "nameserver 1.1.1.1" > /etc/resolv.conf
@@ -44,7 +43,7 @@ pkg install proot-distro
 prootはchrootのtermux実装でchrootと同じくルートディレクトリ構造をファイルシステムと認識しその中で仮想的なOSとして振る舞う。 <br>
 その為xz形式(だっけ？)を展開する。<br>
 
-ArchLinuxのインストールが完了すれば`proot-distro login archlinux`でログイン。コマンドラインとしてコピペでも構わないが、その後先程のシェルスクリプトを実行する。<br>
+ArchLinuxのインストールが完了すれば`proot-distro login archlinux`でログイン。その後先程のシェルスクリプトを実行する。<br>
 ```bash
 # スクリプトとして実行する場合。ファイルに落とし込む場合は要CUIエディタ
 chmod +x <任意のファイル名>.sh
@@ -53,7 +52,7 @@ chmod +x <任意のファイル名>.sh
 blackarchレポジトリにアクセスできない場合、`/etc/pacman.d/blackarch-mirrorlist`を適宜修正する。例えばKDDIの日本サーバーのコメントアウトを外すなど。<br>
 
 ## ユーザーの作成
-ルートでは動かないyayやnmapを使うため、非rootユーザーを作成する。その為のbase-devel。 <br>
+ルートでは動かないyayやnmapを使うため(後述)、非rootユーザーを作成する。その為のbase-devel。 <br>
 ### 手順
 まずホームディレクトリとログインシェルと同時にユーザーを設定する。 <br>
 ```bash
@@ -67,7 +66,7 @@ passwd username
 ## PKGBUILD上の制約でインストールできないツールをyayで補う
 
 ArchLinuxのパッケージは同梱されているPKGBUILDというビルドファイルに基づいている。大抵の場合PKGBUILDにパッケージの対象アーキテクチャが書かれており、表記意外のアーキテクチャでは利用できない。<br>
-ペンテスト環境を整える上で必須のMetasploitとJohnもどいう訳かこれに引っかかっている為、そのPKGBUILDを書き直すかyayを使ってAURのリポジトリから落とす。今回はyayで行く。Aarch64(スマートフォン)プロセッサだとBlackArchと本家で利用できないパッケージが多々存在する。その都度AURを使うといいだろう。<br>
+ペンテスト環境を整える上で必須のMetasploitとJohnもどういう訳かこれに引っかかっている為、そのPKGBUILDを書き直すかyayを使ってAURのリポジトリから落とす。今回はyayで行く。Aarch64(スマートフォン)プロセッサだとBlackArchと本家で利用できないパッケージが多々存在する。その都度AURを使うといいだろう。<br>
 
 ![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-11-19/blackarch-rootless-on-android/arch-x86-64-metasploit.png)
 
@@ -77,14 +76,14 @@ yayはrootユーザーでは利用できない。 <br>
 ここでは2つの不足しているパッケージをインストールする。<br>
 
 ```bash
-yay -S john-git metasploit-git --noconfirm 
+yay -S john-git metasploit-git --noconfirm
 
 ```
 AURパッケージの命名規則として`XXX-git`というものがあるが、これはgitサーバーのソースファイルを参照しているという表しで、基本的にアーキテクチャー指示も含まれていないのでスマートフォンにもインストールできる。<br>
 
 他にインストールしたいツールがあるなら `yay -Ss`コマンドで巡回するといいだろう。<br>
 
-`追記: 今確認したところAURのjohn-gitはビルド時にエラーでつまりトリップしてしまう為KaliのGitLabで開発されているjohnを自前でビルドする必要がある。`<br>
+`追記: 今確認したところAURのjohn-gitはビルド時にエラーでトリップしてしまう為KaliのGitLabで開発されているjohnを自前でビルドする必要がある。`<br>
 [https://gitlab.com/kalilinux/packages/john](https://gitlab.com/kalilinux/packages/john)<br>
 
 ## BlackArchのカスタム
@@ -193,4 +192,4 @@ BlakArchの提供するツールはグールプ化されている。例えば`pa
 ![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-11-19/blackarch-rootless-on-android/blackarch-guide-group2.png)
 ![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-11-19/blackarch-rootless-on-android/blackarch-guide-group.png)
 
-しかし、基本的にAndroidはAarch64ファミリーのCPUで動くためx86系ではない。もし仮にグルーピングされたパッケージにx86_64用依存関係が含まれていた場合、正常なインストールができないので(依存関係を調べ上げ、かつAURかgitから落としてパスを通せば別)欲しいパッケージが手に入らなかったりする。例えばMetasploitはx86_64パッケージとして用意されてるし、BlackArch環境を作るぐらいなら、nhを使った方が間違いなく早い。しかしnhは数年に1回の頻度で際セットアップで難が出るので、臨時でなら使えるかもしれない。PKGBUILDのアーキテクチャ指定をどうするのかが悩みの種となるだろうが...<br>
+しかし、基本的にAndroidはAarch64ファミリーのCPUで動くためx86系ではない。もし仮にグルーピングされたパッケージにx86_64用依存関係が含まれていた場合、正常なインストールができないので(依存関係を調べ上げ、かつAURかgitから落としてパスを通せば別)欲しいパッケージが手に入らなかったりする。例えばMetasploitはx86_64パッケージとして用意されてるし、BlackArch環境を作るぐらいなら、nhを使った方が間違いなく早く手堅いと思う。だがnhは数年に1回の頻度でセットアップで難が出るので、fake root環境の再構築泣きを見るので、臨時でなら使えるかもしれない。PKGBUILDのアーキテクチャ指定をどうするのかが悩みの種となるだろうが...<br>
