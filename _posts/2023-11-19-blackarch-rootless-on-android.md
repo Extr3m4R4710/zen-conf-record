@@ -10,6 +10,17 @@ Androidスマートフォンをペンテスト仕様にカスタムする方法�
 
 本稿ではNetHunter Rootlessの代替として機能するBlackArch環境構築の手引きとnh以外の選択肢を示すことにする。<br>
 
+- [Termuxの取得](#termuxの取得)
+- [Prootの準備](#prootの準備)
+- [ユーザーの作成](#ユーザーの作成)
+	- [手順](#手順)
+- [PKGBUILD上の制約でインストールできないツールをyayで補う](#pkgbuild上の制約でインストールできないツールをyayで補う)
+- [BlackArchのカスタム](#blackarchのカスタム)
+- [実際に動かしてみる](#実際に動かしてみる)
+- [最後に](#最後に)
+- [余談 pacmanにおけるblackarchカテゴリを使うべきか](#余談-pacmanにおけるblackarchカテゴリを使うべきか)
+
+
 先に自動化スクリプトを公開しておく。これをインストールしたproot ArchLinux環境で実行。<br>
 ```bash
 #!/bin/bash
