@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[書きかけ] 匿名通信用ラッパーtor-routerのフォークを書いた話"
-data:  2024-01-04 +0900
+data:  2023-12-10 +0900
 tag: [linux, tor, 匿名通信, hack, 開発]
 ---
 多忙によりtor-routerの修正とNetSpectreの公開についてまとめた記事が書けませんでしたが、時間が確保できましたので公開しておきます。
@@ -17,13 +17,13 @@ tor-routerはEdu4rdSHL氏により作成された簡素な匿名通信ラッパ�
 # バグに気づいた経緯
 私はVPNサーバーがダウンしている間はレポジトリから提供されているtor-routerを使って通信をフルデバイスで難読化していました。その際[Qiitaの方で掲載されている](https://qiita.com/keiya/items/589df899ffd167f4c909)torrcのカスタムを試した後、最終チェックとして[ipinfo.io](https://ipinfo.io)で回線を確認したところプロバイダーのIPアドレスが漏洩していました。私が使っているVPNサービスはサーバーが国家支援型グループ等から定期的にDDoS攻撃を受けている為、全面的にダウンしている場合他に宛てがなくなるのでTorを使っています。そして、その当時VPNサーバーが全面的にダウンしていた為、オリジナル作者の修正を待っている余裕が無いこともあり、自前でフォークとして修正した後、得られた成果をプルリクとして投げることにしました。
 
-![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/24-01-04/my-post-about-tor-router-bug.png)
+![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-12-10/my-post-about-tor-router-bug.png)
 
 # tor-routerの改良
 ## 関数を用いて整形
 tor-routerのソースコードを参照してわかった事の1つとして、コード全体が荒削りだという事です。例えばこのrestart引数は正常に動きません。
 
-![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/24-01-04/restart-arg-in-bad-case.png)
+![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-12-10/restart-arg-in-bad-case.png)
 
 restart引数の問題は恐らくオリジナル作者が`case`文の引数をそのままコマンドと誤認していることが原因です。原型を留めて修正するなら以下のようにbashの特殊変数を使い文中でtor-routerそのものを指し示すべきです。
 ```bash
@@ -33,17 +33,17 @@ restart)
     $0 start
 ;;
 ```
-![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/24-01-04/functionality.png)
+![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-12-10/functionality.png)
 
 今回は可読性を上げるため関数化しました。またセキュリティ強化の為デフォルトでipv6接続を無効化しておきます(スクリプト適用時のみ)。
 なおこの時点でフォークとして再設計している為、本稿で改良しているスクリプトは以下`NetSpectre`と呼称し区別します。
 
 ## スプリットトンネルの改良
-![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/24-01-04/subnet.png)
+![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-12-10/subnet.png)
 
 tor-routerではTor経由でルーティングしない宛先として`192.168.1.0/24`と`192.168.0.0/24`というローカルネットワークが明示的にルーティングから除外されています。
 
-![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/24-01-04/subnet-netspectre.png)
+![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-12-10/subnet-netspectre.png)
 
 ここにも手を加えました。より一般的なアドレスブロックである`192.168.0.0/16` `172.16.0.0/12 ` `10.0.0.0/8`に置き換えました。理由は大規模ネットワークでの運用も視野に入れた為です。ipcalcで計算してみると分かりやすいと思います。
 ```bash
@@ -172,7 +172,7 @@ Iptablesの各種テーブル・チェイン・ターゲットについて軽く
 テーブルは`iptables -t <tables ...>`の形で指定され各チェインは`-A`オプションでルールが追加され、`-j `でターゲットへジャンプします。例えばOUTPUT(出ていくパケット)に対する任意の条件でマッチしたパケットは、その後`-j`の次に指定されるターゲットが行く末を握っています。例として任意の条件Aにマッチしたパケットが`ACCEPT`に出会った際そのまま通過、送信され、仮に`DROP`であった場合、通過は阻まれ送信されません。受け取った瞬間床に投げ捨てるイメージです。
 
 `RETURN`は、該当チェインの検討を中止または、親チェイン内の次のルールから評価を再開する事を示すターゲットです。組み込み済みチェイン(例えばINPUT)に追加されたルールに`RETURN`が使用されている場合、パケットはデフォルトポリシーによって処理されます。尚、iptablesのデフォルトポリシーは特にカスタムされている例外を除き全て`ACCEPT`です。この場合パケットはデフォルトポリシーによって通過します。
-![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/24-01-04/iptables-default-policy.png)
+![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-12-10/iptables-default-policy.png)
 
 
 ```bash
@@ -224,7 +224,7 @@ Iptablesにおいてルールとはパケットを判断する基準(条件)と�
 ```
 tor-routerは`iptables-save >$RULES`(注: $RULESは/var/tmp/tor-router.saveを指している)で現時点のIptablesの内容をバックアップした後`iptables -F` `iptables -t nat -F`コマンドを実行しIptableの`filter`テーブルと`nat`を初期化しています。
 
-![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/24-01-04/set-nat-and-dns-redirect.png)
+![](https://raw.githubusercontent.com/Extr3m4R4710/zen-conf-record/main/IMG/23-12-10/set-nat-and-dns-redirect.png)
 
 段階を分けて見ていきます。まず`iptables -t nat -A OUTPUT -m owner --uid-owner "$TOR_UID" -j RETURN`でiptablesは`nat`テーブルの`OUTPUT`チェインによりTorプロセスパケットに変換されている場合`RETURN`し、また`iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 5353`でDNSトラフィックをlocalhost:5353へ文字通り`リダイレクト`しています。
 
